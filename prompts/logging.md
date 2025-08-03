@@ -1,0 +1,1 @@
+i want to improve logging. currently, it only logs to console. i want to add file logging as well. log files will be rotated daily. logs will be stored in folder './.local/logs'
