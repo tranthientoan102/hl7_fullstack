@@ -1,0 +1,17 @@
+{
+  "name": "hl7_monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm:start:backend\" \"npm:start:frontend\"",
+    "start:backend": "npm start --workspace=backend",
+    "start:frontend": "npm start --workspace=frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

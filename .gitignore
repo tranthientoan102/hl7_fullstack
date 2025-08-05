@@ -1,0 +1,4 @@
+.local
+planners
+*node_modules/*
+*/**/node_modules/

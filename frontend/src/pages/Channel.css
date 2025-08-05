@@ -1,0 +1,93 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 20px;
+  border: none;
+}
+
+.main-content {
+  margin-left: 25%; /* Same as sidebar width */
+  padding: 20px;
+}
+
+/* Add these new styles */
+.sidebar .btn {
+  width: 100%;
+  border-radius: 0;
+}
+
+* {
+  border-radius: 0 !important;
+}
+
+/* Accordion border styles */
+.accordion-item {
+  border: 2px solid black !important;
+  border-top: none !important;
+  margin-bottom: 0 !important;
+}
+
+/* First accordion item should have top border */
+.accordion-item:first-of-type {
+  border-top: 2px solid black !important;
+}
+
+/* Change border color when expanded */
+.accordion-item:has(.accordion-button:not(.collapsed)) {
+  border-color: #0d6efd !important;
+  border-top: 2px solid #0d6efd !important;
+}
+
+/* Adjust border of next item when previous is expanded */
+.accordion-item:has(.accordion-button:not(.collapsed)) + .accordion-item {
+  border-top: 2px solid #0d6efd !important;
+}
+
+/* Remove margin from last accordion item */
+.accordion-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Add spacing when accordion is expanded */
+.accordion-item:has(.accordion-button:not(.collapsed)) {
+  margin: 15px 0 !important;
+  border: 2px solid #0d6efd !important;
+}
+
+/* First accordion item when expanded shouldn't have top margin */
+.accordion-item:first-of-type:has(.accordion-button:not(.collapsed)) {
+  margin-top: 0 !important;
+}
+
+/* Last accordion item when expanded shouldn't have bottom margin */
+.accordion-item:last-of-type:has(.accordion-button:not(.collapsed)) {
+  margin-bottom: 0 !important;
+}
+
+/* Input and button borders */
+.btn {
+  border: 2px solid black !important;
+}
+
+.form-control, .form-select {
+  border: 2px solid #CCCCCC !important;
+}
+
+/* Remove bootstrap's default button border on hover/focus */
+.btn:hover, .btn:focus, .btn:active {
+  border-color: black !important;
+}
+
+/* Remove top border from consecutive textareas */
+.form-control + .form-control {
+  border-top: none !important;
+}
+
+/* Table header styles */
+.table thead th {
+  background-color: #0d6efd;
+  color: white;
+}

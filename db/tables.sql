@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS CHANNEL_SOURCE (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    channelName TEXT,
+    data TEXT,
+    timestamp TEXT
+);
+
+CREATE TABLE IF NOT EXISTS CHANNEL_OUTPUT (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    channelName TEXT,
+    source_id INTEGER,
+    data TEXT,
+    timestamp TEXT,
+    FOREIGN KEY (source_id) REFERENCES CHANNEL_SOURCE(id)
+);

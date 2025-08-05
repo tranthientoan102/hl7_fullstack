@@ -1,0 +1,5 @@
+MSH|||msh3|msh4
+PID|||pid3_1^^^^pid3_5
+OBX|1|field1|field2^field3^field4||field5
+OBX|2|field1|field2^field3^field4||field5
+TOM|tom1|tom2|tom3|||||||tom10|tom11|||||||||tom20|tom21

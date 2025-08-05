@@ -1,0 +1,58 @@
+- name: basicChannel2
+  sourceConfig:
+    type: fromFile
+    folderFullPath: ./.local/input/basicChannel2
+    interval_ms: 5000
+  HL7Converter:
+    CSVHeaderDelimeter: _
+    HL7fieldDelimeter: |
+    HL7componentDelimeter: ^
+    compressedSegmentDelimeter: '[ENDOFSEGMENT]'
+    compressedFieldDelimeter: '[ENDOFFIELD]'
+  outputConfig:
+    type: writeFile
+    folderFullPath: ./.local/output/basicChannel2
+- name: basicChannel3
+  sourceConfig:
+    type: fromFile
+    folderFullPath: ./.local/input/basicChannel3
+    interval_ms: 5000
+  HL7Converter:
+    CSVHeaderDelimeter: _
+    HL7fieldDelimeter: |
+    HL7componentDelimeter: ^
+    compressedSegmentDelimeter: '[ENDOFSEGMENT]'
+    compressedFieldDelimeter: '[ENDOFFIELD]'
+  outputConfig:
+    type: writeFile
+    folderFullPath: ./.local/output/basicChannel3
+- name: channel2
+  sourceConfig:
+    type: fromFile
+    folderFullPath: ./.local/input/channel2
+    interval_ms: 5000
+  HL7Converter:
+    CSVHeaderDelimeter: _
+    HL7fieldDelimeter: |
+    HL7componentDelimeter: ^
+    compressedSegmentDelimeter: '[ENDOFSEGMENT]'
+    compressedFieldDelimeter: '[ENDOFFIELD]'
+  outputConfig:
+    type: writeFile
+    folderFullPath: ./.local/output/channel2
+
+- name: toMockClient
+  sourceConfig:
+    type: fromFile
+    folderFullPath: ./.local/input/toMockClient
+    interval_ms: 5000
+  HL7Converter:
+    CSVHeaderDelimeter: _
+    HL7fieldDelimeter: |
+    HL7componentDelimeter: ^
+    compressedSegmentDelimeter: '[ENDOFSEGMENT]'
+    compressedFieldDelimeter: '[ENDOFFIELD]'
+  outputConfig:
+    type: sendToClient
+    clientIP: 127.0.0.1
+    clientPort: 10000
