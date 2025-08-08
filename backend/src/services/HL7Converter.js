@@ -1,4 +1,6 @@
 
+const logger = require('../utils/logger');
+
 class HL7Converter {
     constructor(options = {}) {
         this.CSVHeaderDelimeter = options.CSVHeaderDelimeter || '_';
@@ -6,6 +8,25 @@ class HL7Converter {
         this.HL7componentDelimeter = options.HL7componentDelimeter || '^';
         this.compressedSegmentDelimeter = options.compressedSegmentDelimeter || '[ENDOFSEGMENT]';
         this.compressedFieldDelimeter = options.compressedFieldDelimeter || '[ENDOFFIELD]';
+    }
+
+    _isCompletelyEmpty(obj) {
+        // Handle null or undefined
+        if (!obj) return true;
+        
+        // Handle non-objects
+        if (typeof obj !== 'object') {
+            return obj === '';
+        }
+    
+        // Handle arrays
+        if (Array.isArray(obj)) {
+            return obj.length === 0 || obj.every(item => this._isCompletelyEmpty(item));
+        }
+    
+        // Handle objects
+        return Object.keys(obj).length === 0 || 
+               Object.values(obj).every(value => this._isCompletelyEmpty(value));
     }
 
     convert(csvLine) {
@@ -67,16 +88,27 @@ class HL7Converter {
 
     toHL7(hl7Object) {
         let hl7Message = '';
-        for (const segmentName in hl7Object) {
-            if (segmentName !== 'OBX') {
-                hl7Message += this.toHL7Normal(segmentName, hl7Object[segmentName]) + '\n';
-            } else {
-                for (const obx of hl7Object.OBX) {
-                    hl7Message += this.toHL7Normal('OBX', obx) + '\n';
+        try {
+            for (const segmentName in hl7Object) {
+                var tmpObj = {segmentName: hl7Object[segmentName]};
+                if (this._isCompletelyEmpty(tmpObj)) {
+                    logger.debug(`Skipping segment ${segmentName} because it is completely empty.`);
+                    continue;
+                }
+
+                if (segmentName !== 'OBX') {
+                    hl7Message += this.toHL7Normal(segmentName, hl7Object[segmentName]) + '\n';
+                } else {
+                    for (const obx of hl7Object.OBX) {
+                        hl7Message += this.toHL7Normal('OBX', obx) + '\n';
+                    }
                 }
             }
+            return hl7Message;
+        } catch (error) {
+            logger.error('Error converting HL7 object to HL7 message:', error);
+            // throw new Error('HL7 conversion failed');
         }
-        return hl7Message;
     }
 
     toHL7Normal(segmentName, segmentData) {
@@ -90,6 +122,11 @@ class HL7Converter {
             maxFieldIndex = Math.max(maxFieldIndex, fieldIndex);
 
             if (typeof segmentData[key] === 'object') {
+                // Skip fields where all components are empty
+                if (this._isCompletelyEmpty(segmentData[key])) {
+                    continue;
+                }
+                
                 if (!fields[fieldIndex]) {
                     fields[fieldIndex] = {};
                 }
@@ -109,16 +146,28 @@ class HL7Converter {
         for (let i = 1; i <= maxFieldIndex; i++) {
             if (fields[i]) {
                 if (typeof fields[i] === 'object') {
-                    let componentString = '';
+                    // Skip if all components are empty
+                    let allComponentsEmpty = true;
                     for (let j = 1; j <= fields[i].maxComponent; j++) {
-                        componentString += fields[i][j] || '';
-                        if (j < fields[i].maxComponent) {
-                            componentString += this.HL7componentDelimeter;
+                        if (fields[i][j] && fields[i][j] !== '') {
+                            allComponentsEmpty = false;
+                            break;
                         }
                     }
-                    segment += componentString;
+                    if (allComponentsEmpty) {
+                        segment += '';
+                    } else {
+                        let componentString = '';
+                        for (let j = 1; j <= fields[i].maxComponent; j++) {
+                            componentString += fields[i][j] || '';
+                            if (j < fields[i].maxComponent) {
+                                componentString += this.HL7componentDelimeter;
+                            }
+                        }
+                        segment += componentString;
+                    }
                 } else {
-                    segment += fields[i];
+                    segment += fields[i] || '';
                 }
             }
 
@@ -128,6 +177,8 @@ class HL7Converter {
         }
         return segment;
     }
+
+
 }
 
 module.exports = HL7Converter;

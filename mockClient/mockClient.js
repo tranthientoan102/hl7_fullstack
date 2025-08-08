@@ -2,7 +2,7 @@
 const net = require('net');
 const fs = require('fs');
 const path = require('path');
-const { getLocalTimestamp } = require('../src/utils/timeUtils');
+const { getLocalTimestamp } = require('../backend/src/utils/timeUtils');
 
 const PORT = 10000;
 const RECEIVED_HL7_MESSAGES_FOLDER = './mockClient/receivedHL7Messages';
