@@ -34,7 +34,7 @@ class ConvertingChannel {
                         return this.hl7Converter.toHL7(hl7Object);
                     });
                     logger.info(`[${this.config.name}] OutputConnector: Sending output for file: ${fileName}`);
-                    this.outputConnector.sendOutput(hl7Messages.join(''), fileName, result.sourceId, this.config.name);
+                    await this.outputConnector.sendOutput(hl7Messages.join(''), fileName, result.sourceId, this.config.name);
                     logger.info(`[${this.config.name}] SourceConnector: Backing up file: ${fileName}`);
                     this.sourceConnector.backup(fileName);
                 }

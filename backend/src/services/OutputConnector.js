@@ -27,23 +27,26 @@ class OutputConnector {
         });
     }
 
-    _sendHl7Messages(messages, channelName, sourceId) {
+    async _sendHl7Messages(messages, channelName, sourceId) {
         const client = new net.Socket();
         client.on('error', (err) => {
-            logger.error('Error sending data to client:', err.message);
+            logger.error('Error sending data to client:', err);
         });
 
-        client.connect(this.config.clientPort, this.config.clientIP, () => {
-            messages.forEach(message => {
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        client.connect(this.config.clientPort, this.config.clientIP, async () => {
+            for (const message of messages) {
                 logger.debug(`Sending message to ${this.config.clientIP}:${this.config.clientPort}:\n${message}`);
                 client.write(message);
                 this._insertOutputIntoDb(channelName, sourceId, message);
-            });
+                await delay(10); // Wait 10ms between messages
+            }
             client.end();
         });
     }
 
-    sendOutput(data, fileName, sourceId, channelName) {
+    async sendOutput(data, fileName, sourceId, channelName) {
         if (this.config.type === 'writeFile') {
             const timestamp = getLocalTimestamp();
             const parsedFileName = path.parse(fileName);
@@ -64,7 +67,7 @@ class OutputConnector {
             }
             messages.push(lines.slice(startLine).join('\n'));
 
-            this._sendHl7Messages(messages, channelName, sourceId);
+            await this._sendHl7Messages(messages, channelName, sourceId);
         }
     }
 }
